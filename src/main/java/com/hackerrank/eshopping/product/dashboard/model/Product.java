@@ -41,6 +41,8 @@ public class Product {
     	this.availability = Optional.ofNullable(product.getAvailability()).orElseGet(()->this.availability);
     }
 
+    //TODO prepersist Discount Percentage  =  (Retail Price — Discounted Price) ⁄ Retail Price  × 100
+    
     public Long getId() {
         return id;
     }

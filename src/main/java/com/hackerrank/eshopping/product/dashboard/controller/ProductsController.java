@@ -66,7 +66,7 @@ public class ProductsController {
 					@RequestParam(name = "availability",required = true)Boolean availability){
 		try {
 			if(Optional.of(availability).isPresent()) {
-				return ResponseEntity.ok(productsServices.listProductsByCategory(category));
+				return ResponseEntity.ok(productsServices.listProductsByCategoryAndAvailability(category,availability));
 			}else {
 				return ResponseEntity.ok(productsServices.listProductsByCategory(category));
 			}
@@ -75,5 +75,10 @@ public class ProductsController {
 		}catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
+	}
+	
+	@GetMapping
+	public ResponseEntity<List<Product>> getAllProducts(){
+		return ResponseEntity.ok(productsServices.listAllProducts());
 	}
 }
