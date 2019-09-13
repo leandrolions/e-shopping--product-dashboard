@@ -2,6 +2,8 @@ package com.hackerrank.eshopping.product.dashboard.services;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -43,5 +45,19 @@ public class ProductsServices {
 		if(productsList.isEmpty())
 			throw new ProductNotFoundException();
 		return productsList;
+	}
+	
+	public List<Product> listProductsByCategoryAndAvailability(String category,Boolean availability) throws ProductNotFoundException{
+		Sort sorted = Sort.by("discountPercentage").descending().and(Sort.by("discountedPrice").ascending().and(Sort.by("id").ascending()));
+		List<Product> productsList = productRepository.findByCategoryIgnoreCaseAndAvailability(category, availability,sorted);
+		if(productsList.isEmpty())
+			throw new ProductNotFoundException();
+		return productsList;
+	}
+	public List<Product> listAllProducts(){
+		return StreamSupport.stream(
+				productRepository.findAll(Sort.by("id").ascending())
+				.spliterator(),false)
+				.collect(Collectors.toList());
 	}
 }

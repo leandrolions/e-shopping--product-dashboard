@@ -16,6 +16,6 @@ import com.hackerrank.eshopping.product.dashboard.model.Product;
 @Repository
 public interface ProductsRepository extends PagingAndSortingRepository<Product, Long>{
 
-	List<Product> findByCategoryIgnoreCase(String category,Sort page);
-	
+	List<Product> findByCategoryIgnoreCase(String category,Sort sort);
+	List<Product> findByCategoryIgnoreCaseAndAvailability(String category,Boolean availability,Sort sort);
 }

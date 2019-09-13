@@ -5,6 +5,7 @@ import java.util.Optional;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
@@ -18,6 +19,8 @@ public class Product {
     @JsonProperty("discounted_price")
     private Double discountedPrice;
     private Boolean availability;
+    @JsonIgnore
+    private Integer discountPercentage;
 
     public Product() {
     }
@@ -85,4 +88,12 @@ public class Product {
     public void setAvailability(Boolean availability) {
         this.availability = availability;
     }
+
+	public Integer getDiscountPercentage() {
+		return discountPercentage;
+	}
+
+	public void setDiscountPercentage(Integer discountPercentage) {
+		this.discountPercentage = discountPercentage;
+	}
 }

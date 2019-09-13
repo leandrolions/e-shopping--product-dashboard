@@ -1,5 +1,8 @@
 package com.hackerrank.eshopping.product.dashboard.controller;
 
+import java.util.List;
+import java.util.Optional;
+
 import javax.websocket.server.PathParam;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,9 +62,14 @@ public class ProductsController {
 	}
 	
 	@GetMapping
-	public ResponseEntity<?> getProductById(@RequestParam(name = "category",required = true)String category){
+	public ResponseEntity<List<Product>> getProductByCategory(@RequestParam(name = "category",required = true)String category,
+					@RequestParam(name = "availability",required = true)Boolean availability){
 		try {
-			return ResponseEntity.ok(productsServices.listProductsByCategory(category));
+			if(Optional.of(availability).isPresent()) {
+				return ResponseEntity.ok(productsServices.listProductsByCategory(category));
+			}else {
+				return ResponseEntity.ok(productsServices.listProductsByCategory(category));
+			}
 		}catch (ProductNotFoundException e) {
 			return ResponseEntity.notFound().build();
 		}catch (Exception e) {
