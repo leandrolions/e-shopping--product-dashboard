@@ -228,3 +228,5 @@ node_modules/
 
 #Eclipse
 .settings
+.project
+.classpath
