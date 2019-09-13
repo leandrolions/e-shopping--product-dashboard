@@ -1,10 +1,21 @@
 package com.hackerrank.eshopping.product.dashboard.model;
 
+import java.util.Optional;
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+@Entity
 public class Product {
+	@Id 
     private Long id;
     private String name;
     private String category;
+    @JsonProperty("retail_price")
     private Double retailPrice;
+    @JsonProperty("discounted_price")
     private Double discountedPrice;
     private Boolean availability;
 
@@ -18,6 +29,13 @@ public class Product {
         this.retailPrice = retailPrice;
         this.discountedPrice = discountedPrice;
         this.availability = availability;
+    }
+    
+    public void mergeProduct(Product product) {
+    	this.name = Optional.ofNullable(product.getName()).orElseGet(()->this.name);
+    	this.category = Optional.ofNullable(product.getCategory()).orElseGet(()->this.category);
+    	this.retailPrice = Optional.ofNullable(product.getRetailPrice()).orElseGet(()->this.retailPrice);
+    	this.availability = Optional.ofNullable(product.getAvailability()).orElseGet(()->this.availability);
     }
 
     public Long getId() {
