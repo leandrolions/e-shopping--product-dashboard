@@ -2,8 +2,11 @@ package com.hackerrank.eshopping.product.dashboard.model;
 
 import java.util.Optional;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -15,11 +18,14 @@ public class Product {
     private String name;
     private String category;
     @JsonProperty("retail_price")
+    @Column(name = "retailprice")
     private Double retailPrice;
     @JsonProperty("discounted_price")
+    @Column(name = "discountedprice")
     private Double discountedPrice;
     private Boolean availability;
     @JsonIgnore
+    @Column(name = "discountpercentage")
     private Integer discountPercentage;
 
     public Product() {
@@ -41,7 +47,13 @@ public class Product {
     	this.availability = Optional.ofNullable(product.getAvailability()).orElseGet(()->this.availability);
     }
 
-    //TODO prepersist Discount Percentage  =  (Retail Price — Discounted Price) ⁄ Retail Price  × 100
+    @PrePersist @PreUpdate
+    private void CalculateDiscountPercentage() {
+    	if(this.retailPrice <= 0 || this.discountedPrice == null) 
+    		this.discountPercentage = 0;
+    	else
+    		this.discountPercentage = (int)Math.round((this.retailPrice - this.discountedPrice) / this.retailPrice *100);
+    }
     
     public Long getId() {
         return id;

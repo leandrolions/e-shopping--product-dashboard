@@ -61,15 +61,11 @@ public class ProductsController {
 		}
 	}
 	
-	@GetMapping
-	public ResponseEntity<List<Product>> getProductByCategory(@RequestParam(name = "category",required = true)String category,
-					@RequestParam(name = "availability",required = true)Boolean availability){
+	@GetMapping("/{product_id}")
+	public ResponseEntity<?> getProductById(@PathParam("product_id") Long productId){
 		try {
-			if(Optional.of(availability).isPresent()) {
-				return ResponseEntity.ok(productsServices.listProductsByCategoryAndAvailability(category,availability));
-			}else {
-				return ResponseEntity.ok(productsServices.listProductsByCategory(category));
-			}
+			productsServices.getProductsById(productId);
+			return ResponseEntity.ok().build();
 		}catch (ProductNotFoundException e) {
 			return ResponseEntity.notFound().build();
 		}catch (Exception e) {
@@ -78,7 +74,20 @@ public class ProductsController {
 	}
 	
 	@GetMapping
-	public ResponseEntity<List<Product>> getAllProducts(){
-		return ResponseEntity.ok(productsServices.listAllProducts());
+	public ResponseEntity<List<Product>> getProductByCategory(@RequestParam(name = "category",required = false)String category,
+					@RequestParam(name = "availability",required = false)Boolean availability){
+		try {
+			if(!Optional.of(availability).isPresent() && !Optional.ofNullable(category).isPresent()) {
+				return ResponseEntity.ok(productsServices.listAllProducts());
+			}else if(!Optional.of(availability).isPresent()) {
+				return ResponseEntity.ok(productsServices.listProductsByCategory(category));
+			}else {
+				return ResponseEntity.ok(productsServices.listProductsByCategoryAndAvailability(category,availability));
+			}
+		}catch (ProductNotFoundException e) {
+			return ResponseEntity.notFound().build();
+		}catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
 	}
 }

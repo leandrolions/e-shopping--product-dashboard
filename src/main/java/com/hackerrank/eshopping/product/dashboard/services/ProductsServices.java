@@ -39,6 +39,11 @@ public class ProductsServices {
 		productRepository.save(productPresent);
 	}
 	
+	public Product getProductsById(Long productId) throws ProductNotFoundException {
+		Optional<Product> productOptinal = productRepository.findById(productId);
+		return productOptinal.orElseThrow(ProductNotFoundException::new);
+	}
+	
 	public List<Product> listProductsByCategory(String category) throws ProductNotFoundException{
 		Sort sorted = Sort.by("availability").descending().and(Sort.by("discountedPrice").ascending().and(Sort.by("id").ascending()));
 		List<Product> productsList = productRepository.findByCategoryIgnoreCase(category, sorted);
