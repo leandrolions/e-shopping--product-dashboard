@@ -8,10 +8,12 @@ import java.util.stream.StreamSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.UriUtils;
 
 import com.hackerrank.eshopping.product.dashboard.exceptions.ProductConstraintViolationException;
 import com.hackerrank.eshopping.product.dashboard.exceptions.ProductNotFoundException;
 import com.hackerrank.eshopping.product.dashboard.model.Product;
+import com.hackerrank.eshopping.product.dashboard.model.ProductUpdate;
 import com.hackerrank.eshopping.product.dashboard.repository.ProductsRepository;
 /**
  * 
@@ -32,7 +34,7 @@ public class ProductsServices {
 		productRepository.save(product);
 	}
 	
-	public void updateProduct(Long productId,Product product)throws ProductNotFoundException{
+	public void updateProduct(Long productId,ProductUpdate product)throws ProductNotFoundException{
 		Optional<Product> productOptinal = productRepository.findById(productId);
 		Product productPresent = productOptinal.orElseThrow(ProductNotFoundException::new);
 		productPresent.mergeProduct(product);
@@ -45,18 +47,14 @@ public class ProductsServices {
 	}
 	
 	public List<Product> listProductsByCategory(String category) throws ProductNotFoundException{
-		Sort sorted = Sort.by("availability").descending().and(Sort.by("discountedPrice").ascending().and(Sort.by("id").ascending()));
-		List<Product> productsList = productRepository.findByCategoryIgnoreCase(category, sorted);
-		if(productsList.isEmpty())
-			throw new ProductNotFoundException();
+		Sort sorted = Sort.by("availability").descending().and(Sort.by("discountedPrice").ascending()).and(Sort.by("id").ascending());
+		List<Product> productsList = productRepository.findByCategoryIgnoreCase(decodeStringUTF8(category), sorted);
 		return productsList;
 	}
 	
 	public List<Product> listProductsByCategoryAndAvailability(String category,Boolean availability) throws ProductNotFoundException{
-		Sort sorted = Sort.by("discountPercentage").descending().and(Sort.by("discountedPrice").ascending().and(Sort.by("id").ascending()));
-		List<Product> productsList = productRepository.findByCategoryIgnoreCaseAndAvailability(category, availability,sorted);
-		if(productsList.isEmpty())
-			throw new ProductNotFoundException();
+		Sort sorted = Sort.by("discountPercentage").descending().and(Sort.by("discountedPrice").ascending()).and(Sort.by("id").ascending());
+		List<Product> productsList = productRepository.findByCategoryIgnoreCaseAndAvailability(decodeStringUTF8(category), availability,sorted);
 		return productsList;
 	}
 	public List<Product> listAllProducts(){
@@ -64,5 +62,9 @@ public class ProductsServices {
 				productRepository.findAll(Sort.by("id").ascending())
 				.spliterator(),false)
 				.collect(Collectors.toList());
+	}
+	
+	private String decodeStringUTF8(String valor) {
+		return UriUtils.decode(valor, "UTF-8");
 	}
 }

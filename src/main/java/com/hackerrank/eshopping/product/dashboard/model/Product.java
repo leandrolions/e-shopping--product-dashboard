@@ -10,9 +10,11 @@ import javax.persistence.PreUpdate;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @Entity
-public class Product {
+@JsonPropertyOrder({ "id","name","category","retail_price","discounted_price","availability"})
+public class Product{
 	@Id 
     private Long id;
     private String name;
@@ -40,11 +42,10 @@ public class Product {
         this.availability = availability;
     }
     
-    public void mergeProduct(Product product) {
-    	this.name = Optional.ofNullable(product.getName()).orElseGet(()->this.name);
-    	this.category = Optional.ofNullable(product.getCategory()).orElseGet(()->this.category);
-    	this.retailPrice = Optional.ofNullable(product.getRetailPrice()).orElseGet(()->this.retailPrice);
-    	this.availability = Optional.ofNullable(product.getAvailability()).orElseGet(()->this.availability);
+    public void mergeProduct(ProductUpdate product) {
+    	discountedPrice = Optional.ofNullable(product.getDiscountedPrice()).orElseGet(()->this.discountedPrice);
+    	retailPrice = Optional.ofNullable(product.getRetailPrice()).orElseGet(()->this.retailPrice);
+    	availability = Optional.ofNullable(product.getAvailability()).orElseGet(()->this.availability);
     }
 
     @PrePersist @PreUpdate
@@ -79,35 +80,35 @@ public class Product {
         this.category = category;
     }
 
-    public Double getRetailPrice() {
-        return retailPrice;
-    }
-
-    public void setRetailPrice(Double retailPrice) {
-        this.retailPrice = retailPrice;
-    }
-
-    public Double getDiscountedPrice() {
-        return discountedPrice;
-    }
-
-    public void setDiscountedPrice(Double discountedPrice) {
-        this.discountedPrice = discountedPrice;
-    }
-
-    public Boolean getAvailability() {
-        return availability;
-    }
-
-    public void setAvailability(Boolean availability) {
-        this.availability = availability;
-    }
-
 	public Integer getDiscountPercentage() {
 		return discountPercentage;
 	}
 
 	public void setDiscountPercentage(Integer discountPercentage) {
 		this.discountPercentage = discountPercentage;
+	}
+
+	public Double getRetailPrice() {
+		return retailPrice;
+	}
+
+	public void setRetailPrice(Double retailPrice) {
+		this.retailPrice = retailPrice;
+	}
+
+	public Double getDiscountedPrice() {
+		return discountedPrice;
+	}
+
+	public void setDiscountedPrice(Double discountedPrice) {
+		this.discountedPrice = discountedPrice;
+	}
+
+	public Boolean getAvailability() {
+		return availability;
+	}
+
+	public void setAvailability(Boolean availability) {
+		this.availability = availability;
 	}
 }
